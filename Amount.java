@@ -49,14 +49,20 @@
 public class Amount{
 
     // Ensure the correct initialization of the values
-    //@ private invariant (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
-    //@ private invariant (euros >= 0 ==> cents >=0) || (euros <= 0 ==> cents <= 0);
+    //@ public invariant (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
+    //@ public invariant (euros >= 0 ==> cents >=0) || (euros <= 0 ==> cents <= 0);
+    
+    //@ spec_public
     private int cents;
+    //@ spec_public
     private int euros;
     
     /*@ requires euros >= 0 ==> cents >= 0;
       @ requires euros <= 0 ==> cents <= 0;
       @ requires (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
+      @ ensures this.euros == euros;
+      @ ensures this.cents == cents;
+      @ ensures this != null;
       @*/
     public Amount(int euros, int cents){
         this.euros = euros;
