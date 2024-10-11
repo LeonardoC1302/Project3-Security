@@ -48,15 +48,21 @@
 //@ nullable_by_default                      // Do not remove this annotation
 public class Amount{
 
+    // Ensure the correct initialization of the values
+    //@ private invariant (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
+    //@ private invariant (euros >= 0 ==> cents >=0) || (euros <= 0 ==> cents <= 0);
     private int cents;
-
     private int euros;
- 
+    
+    /*@ requires euros >= 0 ==> cents >= 0;
+      @ requires euros <= 0 ==> cents <= 0;
+      @ requires (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
+      @*/
     public Amount(int euros, int cents){
         this.euros = euros;
         this.cents = cents;
     }
-
+/*    
     public Amount negate(){
         return new Amount(-cents,-euros); 
     }
@@ -91,5 +97,5 @@ public class Amount{
         if (a==null) return false;
         else return (euros == a.euros && cents == a.cents);
     }
-
+*/
 }
