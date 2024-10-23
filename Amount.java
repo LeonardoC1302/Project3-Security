@@ -69,10 +69,11 @@ public class Amount{
         this.cents = cents;
         //@ assert this.cents == cents;
     }
- 
+    
+
 /*
     public Amount negate(){
-        return new Amount(-cents,-euros); 
+        return new Amount(-euros,-cents); // se cambia el orden de los parametros
     }
     public Amount subtract(Amount a){
         return this.add(a.negate());
@@ -81,19 +82,19 @@ public class Amount{
     public Amount add(Amount a){
         int new_euros = euros + a.euros;
         int new_cents = cents + a.cents; 
-        if (new_cents < -100) {  
+        if (new_cents <= -100) {  // se debe incluir para cuando no hay centavos
             new_cents = new_cents + 100;
             new_euros = new_euros - 1;
         } 
-        if (new_cents > 100) {  
+        if (new_cents >= 100) {  // Se debe incluir para cuando no hay centavos
             new_cents = new_cents - 100;
-            new_euros = new_euros - 1;
+            new_euros = new_euros + 1; // Se debe sumar y no restar
         } 
         if (new_cents < 0 && new_euros > 0) { 
             new_cents = new_cents + 100; 
             new_euros = new_euros - 1;
         } 
-        if (new_cents >= 0 && new_euros <= 0) {
+        if (new_cents > 0 && new_euros < 0) { // no se debe permitir 0
             new_cents = new_cents - 100; 
             new_euros = new_euros + 1;
         }
