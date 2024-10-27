@@ -81,18 +81,21 @@ public class Amount{
     public Amount negate(){
         return new Amount(-euros,-cents); // se cambia el orden de los parametros
     }
-
+  
     //@ requires a != null;
     //@ requires a.euros != Integer.MIN_VALUE;
     //@ requires a.cents != Integer.MIN_VALUE;
     //@ requires a.euros >= 0 ==> a.cents >= 0;
     //@ requires a.euros <= 0 ==> a.cents <= 0;
     //@ requires (a.cents >= 0 && a.cents <100) || (a.cents < 0 && a.cents > -100);
-  /* 
+
+
+    /* 
     public Amount subtract(Amount a){
+        //@ assume ((a.euros == 0 ==> a.cents == 0) || (a.euros != 0 || a.cents != 0)) && ((a.euros + a.cents) >= 0);
         return this.add(a.negate());
     }
-*/
+    */
 
     //@ requires a != null;
     //@ requires a.euros + euros < Integer.MAX_VALUE;
