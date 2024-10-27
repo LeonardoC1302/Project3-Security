@@ -46,65 +46,31 @@
 */
 
 //@ nullable_by_default                      // Do not remove this annotation
-public class Amount{
-
+public class AmountOriginal{
 
     //@ spec_public
     private int cents;
     //@ spec_public
     private int euros;
 
-
-    /*@ requires euros >= 0 ==> cents >= 0;
-      @ requires euros <= 0 ==> cents <= 0;
-      @ requires (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
-      @ ensures this.euros == euros;
-      @ ensures this.cents == cents;
-      @ ensures this != null;
-    @*/
-    public Amount(int euros, int cents){
+    public AmountOriginal(int euros, int cents){
         this.euros = euros;
-        //@ assert this.euros == euros;
         this.cents = cents;
-        //@ assert this.cents == cents;
     }
     
-
     //@ requires this.euros != Integer.MIN_VALUE;
     //@ requires this.cents != Integer.MIN_VALUE;
-    //@ requires euros >= 0 ==> cents >= 0;
-    //@ requires euros <= 0 ==> cents <= 0;
-    //@ requires (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
-
-    //@ ensures \result != null;
-    //@ ensures \result.euros >= 0 ==> \result.cents >= 0;
-    public Amount negate(){
-        return new Amount(-euros,-cents); // se cambia el orden de los parametros
+    public AmountOriginal negate(){
+        return new AmountOriginal(-euros,-cents); // se cambia el orden de los parametros
     }
-
-    //@ requires a != null;
-    //@ requires a.euros != Integer.MIN_VALUE;
-    //@ requires a.cents != Integer.MIN_VALUE;
-    //@ requires a.euros >= 0 ==> a.cents >= 0;
-    //@ requires a.euros <= 0 ==> a.cents <= 0;
-    //@ requires (a.cents >= 0 && a.cents <100) || (a.cents < 0 && a.cents > -100);
-  /* 
-    public Amount subtract(Amount a){
+/*
+    public AmountOriginal subtract(AmountOriginal a){
         return this.add(a.negate());
     }
 */
 
-    //@ requires a != null;
-    //@ requires a.euros + euros < Integer.MAX_VALUE;
-    //@ requires a.cents + cents <= Integer.MAX_VALUE;
-    //@ requires a.euros + euros > Integer.MIN_VALUE;
-    //@ requires a.euros + euros >= Integer.MIN_VALUE;
-    //@ requires a.cents + cents >= Integer.MIN_VALUE;
-
-    //@ requires (a.euros + euros <= 0) ==> (a.cents + cents <= 0);
-    //@ requires ((a.cents + cents >= 0) && (a.cents + cents < 100)) || ((a.cents + cents < 0) && (a.cents + cents > -100));
-    //@ requires (a.euros + euros >= 0) ==> (a.cents + cents >= 0);
-    public Amount add(Amount a){
+    
+    public AmountOriginal add(AmountOriginal a){
         int new_euros = euros + a.euros;
         int new_cents = cents + a.cents; 
         if (new_cents <= -100) {  // se debe incluir para cuando no hay centavos
@@ -123,14 +89,13 @@ public class Amount{
             new_cents = new_cents - 100; 
             new_euros = new_euros + 1;
         }
-        
-        return new Amount(new_euros,new_cents);
+        return new AmountOriginal(new_euros,new_cents);
     }
+    /*
 
-
-    public boolean equal(Amount a) {
+    public boolean equal(AmountOriginal a) {
         if (a==null) return false;
         else return (euros == a.euros && cents == a.cents);
     }
-
+*/
 }
