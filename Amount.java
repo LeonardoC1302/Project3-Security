@@ -89,7 +89,7 @@ public class Amount{
     //@ requires a.euros <= 0 ==> a.cents <= 0;
     //@ requires (a.cents >= 0 && a.cents <100) || (a.cents < 0 && a.cents > -100);
     public Amount subtract(Amount a){
-        Amount negatedA = new Amount(-a.euros, -a.cents);
+        Amount negatedA = a.negate(); // se pone por separado para poder realizar las validaciones correspondientes
         //@ assume (negatedA.euros + this.euros > Integer.MIN_VALUE && negatedA.euros + this.euros < Integer.MAX_VALUE) && (((negatedA.euros + this.euros >= 0) ==> (negatedA.cents + this.cents >= 0)) && ((negatedA.euros + this.euros <= 0) ==> (negatedA.cents + this.cents <= 0)) && ((negatedA.cents + this.cents >= 0 && negatedA.cents + this.cents < 100) || (negatedA.cents + this.cents < 0 && negatedA.cents + this.cents > -100)));
 
         return this.add(negatedA);
