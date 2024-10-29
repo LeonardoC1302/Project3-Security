@@ -61,6 +61,7 @@ public class Amount{
       @ ensures this.euros == euros;
       @ ensures this.cents == cents;
       @ ensures this != null;
+      @pure
     @*/
     public Amount(int euros, int cents){
         this.euros = euros;
@@ -77,7 +78,11 @@ public class Amount{
     //@ requires (cents >= 0 && cents <100) || (cents < 0 && cents > -100);
 
     //@ ensures \result != null;
-    //@ ensures \result.euros >= 0 ==> \result.cents >= 0;
+    //@ ensures \result.euros == -euros;
+    //@ ensures \result.cents == -cents;
+    //@ ensures (\result.euros >= 0 ==> \result.cents >= 0) && (\result.euros <= 0 ==> \result.cents <= 0);
+    //@ ensures (\result.cents >= 0 && \result.cents < 100) || (\result.cents < 0 && \result.cents > -100);
+    //@ pure
     public Amount negate(){
         return new Amount(-euros,-cents); // se cambia el orden de los parametros
     }
@@ -88,11 +93,22 @@ public class Amount{
     //@ requires a.euros >= 0 ==> a.cents >= 0;
     //@ requires a.euros <= 0 ==> a.cents <= 0;
     //@ requires (a.cents >= 0 && a.cents <100) || (a.cents < 0 && a.cents > -100);
-    public Amount subtract(Amount a){
-        Amount negatedA = a.negate(); // se pone por separado para poder realizar las validaciones correspondientes
-        //@ assume (negatedA.euros + this.euros > Integer.MIN_VALUE && negatedA.euros + this.euros < Integer.MAX_VALUE) && (((negatedA.euros + this.euros >= 0) ==> (negatedA.cents + this.cents >= 0)) && ((negatedA.euros + this.euros <= 0) ==> (negatedA.cents + this.cents <= 0)) && ((negatedA.cents + this.cents >= 0 && negatedA.cents + this.cents < 100) || (negatedA.cents + this.cents < 0 && negatedA.cents + this.cents > -100)));
 
-        return this.add(negatedA);
+    //@ requires -a.euros != Integer.MIN_VALUE;
+    //@ requires -a.cents != Integer.MIN_VALUE;
+    //@ requires -a.euros >= 0 ==> -a.cents >= 0;
+    //@ requires -a.euros <= 0 ==> -a.cents <= 0;
+    //@ requires (-a.cents >= 0 && -a.cents <100) || (-a.cents < 0 && -a.cents > -100);
+
+    //@ requires (-a.euros + euros >= 0) ==> (-a.cents + cents >= 0);
+    //@ requires (-a.euros + euros <= 0) ==> (-a.cents + cents <= 0);
+    //@ requires ((-a.cents + cents >= 0) && (-a.cents + cents < 100)) || ((-a.cents + cents < 0) && (-a.cents + cents > -100));
+    //@ requires -a.euros + euros < Integer.MAX_VALUE;
+    //@ requires -a.cents + cents >= Integer.MIN_VALUE;
+    //@ requires a.negate() != null;
+    //@ requires a.negate().euros + euros > Integer.MIN_VALUE;
+    public Amount subtract(Amount a){
+        return this.add(a.negate());
     }
 
 
