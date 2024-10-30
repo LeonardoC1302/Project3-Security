@@ -19,22 +19,32 @@
 class Bag {
     int[] contents;
     int n;
-/*
+
     //@ requires input != null;
+    //@ ensures n == input.length;
     Bag(int[] input) {
         n = input.length;
         contents = new int[n];
         arraycopy(input, 0, contents, 0, n);
     }
-*/
+
     Bag() {
         n = 0;
         contents = new int[0];
     }
-/*
+
+    //@ requires contents != null;
+    //@ requires n <= contents.length;
+    //@ requires n >= 0;
     void removeOnce(int elt) {
         // Changed <= to < to fix off-by-one error
+
+        /*@ maintaining 0 <= i <= n;
+        @ maintaining i <= contents.length;
+        @ maintaining n <= contents.length;
+        @*/
         for (int i = 0; i < n; i++) {
+            //@ assert i < contents.length;
             if (contents[i] == elt) {
                 n--;
                 contents[i] = contents[n];
@@ -43,21 +53,45 @@ class Bag {
         }
     }
 
+    //@ requires contents != null;
+    //@ requires n <= contents.length;
+    //@ requires n >= 0;
     void removeAll(int elt) {
-        // Changed <= to < to fix off-by-one error
-        for (int i = 0; i < n; i++) {
+        /*@ maintaining 0 <= i <= n;
+        @ maintaining i <= contents.length;
+        @ maintaining n <= contents.length;
+        @ maintaining n >= 0;  // Added to track that n stays non-negative
+        @ maintaining \old(n) >= n;  // Added to track that n only decreases
+        @ maintaining i <= \old(n);  // Added to ensure i stays within original bounds
+        @*/
+        for (int i = 0; i < n; i++) { // Changed <= to < to fix off-by-one error
+            //@ assert i < contents.length;
             if (contents[i] == elt) {
                 n--;
                 contents[i] = contents[n];
+                i--; // Para revisar el elemento que acabamos de agregar
             }
         }
     }
 
+    //@ requires contents != null;
+    //@ requires n <= contents.length;
+    //@ requires n >= 0;
+    //@ requires n < Integer.MAX_VALUE;
     int getCount(int elt) {
-        // Changed <= to < to fix off-by-one error
         int count = 0;
-        for (int i = 0; i < n; i++)
-            if (contents[i] == elt) count++;
+        /*@ maintaining 0 <= i <= n;  // Cambiado para usar n en lugar de contents.length
+        @ maintaining i <= contents.length;
+        @ maintaining count >= 0;
+        @ maintaining count <= i;  // count no puede ser mayor que elementos revisados
+        @ maintaining count <= Integer.MAX_VALUE - (n - i);  // Prevenir overflow futuro
+        @*/
+        for (int i = 0; i < n; i++) {
+            //@ assert i < contents.length;
+            if (contents[i] == elt) {
+                count++;
+            }
+        }
         return count;
     }
 
@@ -85,21 +119,31 @@ class Bag {
     //@ requires n >= 0;
     //@ requires b.n >= 0;
     //@ requires n + b.n >= 0;
+    //@ requires b.contents != null;
+    //@ requires contents != null;
+    //@ requires n <= contents.length;
+    //@ requires b.n <= b.contents.length;
     void add(Bag b) {
         int[] new_contents = new int[n + b.n];
+        //@ assert n <= contents.length;  // Ayuda al verificador
+        //@ assert 0 + n <= contents.length;  // Para la primera llamada a arraycopy
         arraycopy(contents, 0, new_contents, 0, n);
+
+        //@ assert b.n <= b.contents.length;  // Ayuda al verificador
+        //@ assert 0 + b.n <= b.contents.length;  // Para la segunda llamada a arraycopy
         // Changed n+1 to n to fix index out of bounds error
         arraycopy(b.contents, 0, new_contents, n, b.n);
         contents = new_contents;
     }
-
+/*
+    //@ requires a != null;
+    //@ requires a.length + this.n >= Integer.MIN_VALUE;
     void add(int[] a) {
         this.add(new Bag(a));
     }
 
-    //@ requires b != null;
     Bag(Bag b) {
-        this.add(b.contents); // Changed because add recieves the contents array
+        this.add(b);
     }
 */
     //@ requires dest != null;
@@ -118,16 +162,15 @@ class Bag {
                                 int[] dest,
                                 int destOff,
                                 int length) {
-        int i = 0;
+
         /*@ maintaining 0 <= i <= length;
         @ maintaining destOff + i <= dest.length;
         @ maintaining srcOff + i <= src.length;
         @*/
-        while (i < length) {
+        for(int i=0; i<length; i++) {
             //@ assert destOff + i < dest.length && destOff + i >= 0;
             //@ assert srcOff + i < src.length && srcOff + i >= 0;
             dest[destOff + i] = src[srcOff + i];
-            i++;
         }
     }
 }
