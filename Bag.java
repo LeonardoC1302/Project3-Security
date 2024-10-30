@@ -22,6 +22,9 @@ class Bag {
 
     //@ requires input != null;
     //@ ensures n == input.length;
+    //@ ensures contents != null;
+    //@ ensures contents.length == input.length;
+    //@ pure
     Bag(int[] input) {
         n = input.length;
         contents = new int[n];
@@ -135,17 +138,29 @@ class Bag {
         arraycopy(b.contents, 0, new_contents, n, b.n);
         contents = new_contents;
     }
-/*
+
     //@ requires a != null;
     //@ requires a.length + this.n >= Integer.MIN_VALUE;
+    //@ requires a.length + this.n <= Integer.MAX_VALUE;
+    //@ requires a.length >= 0;  // implícito por ser un array, pero ayuda al verificador
+    //@ requires this.n >= 0;    // necesario para la precondición de add(Bag)
+    //@ requires n == a.length;
+    //@ requires contents != null;
+    //@ requires n<=contents.length;
     void add(int[] a) {
         this.add(new Bag(a));
     }
 
+    //@ requires b != null;
+    //@ requires b.n >= 0;  // prevent negative counts
+    //@ requires b.n <= Integer.MAX_VALUE;  // prevent overflow when adding
+    //@ requires b.contents != null;
+    //@ requires b.n <= b.contents.length;
     Bag(Bag b) {
+        contents = new int[b.n]; // Se debe inicializar, pues no se esta realizando en ninguna parte
         this.add(b);
     }
-*/
+
     //@ requires dest != null;
     //@ requires dest != null;
     //@ requires src != null;
